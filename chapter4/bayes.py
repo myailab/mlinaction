@@ -7,7 +7,11 @@ from numpy import *
 import sys
 import syslog
 
-
+'''
+    加载一个数据集
+    @:return postingList 数组 帖子列表
+    @:return classVec 数组 所属类别列表
+'''
 def loadDataSet():
     postingList = [['my', 'dog', 'has', 'flea', 'problems', 'help', 'please'],
                    ['maybe', 'not', 'take', 'him', 'to', 'dog', 'park', 'stupid'],
@@ -20,13 +24,24 @@ def loadDataSet():
 
 
 def createVocabList(dataSet):
-    vocabSet = set([])  # create empty set
+    '''
+        创建词汇列表
+        @:parameter dataSet 数组
+        @:return list 列表
+    '''
+    vocabSet = set([])  # 创建空集合
     for document in dataSet:
-        vocabSet = vocabSet | set(document)  # union of the two sets
+        vocabSet = vocabSet | set(document)  # 合并两个集合
     return list(vocabSet)
 
 
 def setOfWords2Vec(vocabList, inputSet):
+    '''
+        将词汇集转换成向量
+        @:param vocabList 数组
+        @:param inputSet 数组
+        @:return returnVec 列表
+    '''
     returnVec = [0] * len(vocabList)
     for word in inputSet:
         if word in vocabList:
@@ -37,6 +52,14 @@ def setOfWords2Vec(vocabList, inputSet):
 
 
 def trainNB0(trainMatrix, trainCategory):
+    '''
+        训练朴素贝叶斯(Naive Bayes)算法
+        @:parameter trainMatrix 数组 需要训练的数据
+        @:parameter trainCategory 数组 训练数据的所属类别
+        @:return p0Vect, p1Vect, pAbusive
+        @:return
+        @:return
+    '''
     numTrainDocs = len(trainMatrix)
     numWords = len(trainMatrix[0])
     pAbusive = sum(trainCategory) / float(numTrainDocs)
@@ -198,10 +221,10 @@ def calcMostFreq(vocabList, fullText):
 
 def localWords(feed1, feed0):
     import feedparser
-    docList = []
+    docList   = []
     classList = []
-    fullText = []
-    minLen = min(len(feed1['entries']), len(feed0['entries']))
+    fullText  = []
+    minLen    = min(len(feed1['entries']), len(feed0['entries']))
     for i in range(minLen):
         wordList = textParse(feed1['entries'][i]['summary'])
         docList.append(wordList)
@@ -211,7 +234,7 @@ def localWords(feed1, feed0):
         docList.append(wordList)
         fullText.extend(wordList)
         classList.append(0)
-    vocabList = createVocabList(docList)  # create vocabulary
+    vocabList  = createVocabList(docList)  # create vocabulary
     top30Words = calcMostFreq(vocabList, fullText)  # remove top 30 words
     for pairW in top30Words:
         if pairW[0] in vocabList: vocabList.remove(pairW[0])

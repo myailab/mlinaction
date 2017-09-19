@@ -6,8 +6,8 @@ Created on Oct 14, 2010
 import matplotlib.pyplot as plt
 
 decisionNode = dict(boxstyle="sawtooth", fc="0.8")
-leafNode = dict(boxstyle="round4", fc="0.8")
-arrow_args = dict(arrowstyle="<-")
+leafNode     = dict(boxstyle="round4", fc="0.8")
+arrow_args   = dict(arrowstyle="<-")
 
 
 def getNumLeafs(myTree):
@@ -82,8 +82,8 @@ def createPlot(inTree):
     fig = plt.figure(1, facecolor='white')
     fig.clf()
     axprops = dict(xticks=[], yticks=[])
-    createPlot.ax1 = plt.subplot(111, frameon=False, **axprops)  # no ticks
-    # createPlot.ax1 = plt.subplot(111, frameon=False) #ticks for demo puropses
+    #createPlot.ax1 = plt.subplot(111, frameon=False, **axprops)  # no ticks
+    createPlot.ax1 = plt.subplot(111, frameon=False) #ticks for demo puropses
     plotTree.totalW = float(getNumLeafs(inTree))
     plotTree.totalD = float(getTreeDepth(inTree))
     plotTree.xOff = -0.5 / plotTree.totalW;

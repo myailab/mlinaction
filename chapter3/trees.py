@@ -36,14 +36,14 @@ def splitDataSet(dataSet, axis, value):
     retDataSet = []
     for featVec in dataSet:
         if featVec[axis] == value:
-            reducedFeatVec = featVec[:axis]  # chop out axis used for splitting
+            reducedFeatVec = featVec[:axis]  # chop out axis used for splitting 删除用于切分的轴
             reducedFeatVec.extend(featVec[axis + 1:])
             retDataSet.append(reducedFeatVec)
     return retDataSet
 
 
 def chooseBestFeatureToSplit(dataSet):
-    numFeatures = len(dataSet[0]) - 1  # the last column is used for the labels
+    numFeatures = len(dataSet[0]) - 1  # 最后一列是标签列
     baseEntropy = calcShannonEnt(dataSet)
     bestInfoGain = 0.0;
     bestFeature = -1

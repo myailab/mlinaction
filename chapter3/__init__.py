@@ -11,7 +11,7 @@ if __name__ == "__main__":
     print("aaaa")
 
     #简单数据集绘制树形图
-    #type = "plot"
+    type = "plot"
 
     #递规构建决策树
     #type = "trees"
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     #type = "shnnonEnt"
 
     #使用决策树预测隐形眼镜类型
-    type = "lenses"
+    #type = "lenses"
 
     if ( type == "plot" ) :
         myTree = tp.retrieveTree (0)
