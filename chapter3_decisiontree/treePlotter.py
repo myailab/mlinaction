@@ -124,9 +124,8 @@ def createPlot(inTree):
     fig.clf()   #clf():清除当前图像
     #axprops = dict(xticks=[], yticks=[])
     #createPlot.ax1 = plt.subplot(111, frameon=False, **axprops)  # no ticks 无钩号
-    '''
-        subplot():返回一个用给定表格位置的子图像
-    '''
+    #subplot():返回一个用给定表格位置的子图像
+
     createPlot.ax1 = plt.subplot(111, frameon=False) #ticks for demo puropses 仅用于demo的钩号
     #createPlot.ax1的输出结果为:AxesSubplot(0.125,0.11;0.775x0.77)
     plotTree.totalW = float(getNumLeafs(inTree))
