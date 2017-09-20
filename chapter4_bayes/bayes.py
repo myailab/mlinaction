@@ -98,6 +98,10 @@ def bagOfWords2VecMN(vocabList, inputSet):
 
 
 def testingNB():
+    '''
+        运用朴素贝叶斯算法对帖子进行分类
+    :return:
+    '''
     listOPosts, listClasses = loadDataSet()
     myVocabList = createVocabList(listOPosts)
     trainMat = []
@@ -127,11 +131,14 @@ def textParse(fileNum, type):  # input is big string, #output is word list
         saveLog(ex)
         pass
 
-'''
-    打开文件,并检测编码，然后返回读取的文件内容
 
-'''
 def openFile(fileNum, type):
+    '''
+        打开文件,并检测编码，然后返回读取的文件内容
+    :param fileNum:
+    :param type:
+    :return:
+    '''
     import io
     import chardet
     import codecs
