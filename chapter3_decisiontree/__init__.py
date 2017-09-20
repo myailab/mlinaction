@@ -11,10 +11,10 @@ if __name__ == "__main__":
     print("aaaa")
 
     #简单数据集绘制树形图
-    type = "plot"
+    #type = "plot"
 
     #递规构建决策树
-    #type = "trees"
+    type = "trees"
 
     #计算香农熵
     #type = "shnnonEnt"
@@ -32,6 +32,7 @@ if __name__ == "__main__":
     elif( type == "trees" ):
         myDat, labels = tr.createDataSet()
         myTree = tr.createTree(myDat,labels)
+        print('myTree:', myTree)
     elif(type=="lenses"):
         fpath = "lenses.txt"
         fr = open(fpath, 'r')
