@@ -2,6 +2,8 @@
 Created on Mar 24, 2011
 Ch 11 code
 @author: Peter
+    先验算法：
+        用于分析关联关系
 '''
 from numpy import *
 
@@ -16,8 +18,10 @@ def createC1(dataSet):
                 C1.append([item])
                 
     C1.sort()
-    return map(frozenset, C1)#use frozen set so we
-                            #can use it as a key in a dict    
+    # use frozen set so we
+    # can use it as a key in a dict
+    # 对C1中的每个项构建一个不变项集合
+    return map(frozenset, C1)
 
 def scanD(D, Ck, minSupport):
     ssCnt = {}
@@ -77,7 +81,7 @@ def calcConf(freqSet, H, supportData, brl, minConf=0.7):
     for conseq in H:
         conf = supportData[freqSet]/supportData[freqSet-conseq] #calc confidence
         if conf >= minConf: 
-            print freqSet-conseq,'-->',conseq,'conf:',conf
+            print(freqSet-conseq,'-->',conseq,'conf:',conf)
             brl.append((freqSet-conseq, conseq, conf))
             prunedH.append(conseq)
     return prunedH
@@ -93,12 +97,12 @@ def rulesFromConseq(freqSet, H, supportData, brl, minConf=0.7):
 def pntRules(ruleList, itemMeaning):
     for ruleTup in ruleList:
         for item in ruleTup[0]:
-            print itemMeaning[item]
-        print "           -------->"
+            print(itemMeaning[item])
+        print("           -------->")
         for item in ruleTup[1]:
-            print itemMeaning[item]
-        print "confidence: %f" % ruleTup[2]
-        print       #print a blank line
+            print(itemMeaning[item])
+        print("confidence: %f" % ruleTup[2])
+        print()       #print a blank line
         
             
 from time import sleep
@@ -116,11 +120,11 @@ def getActionIds():
                 if action.level == 'House' and \
                 (action.stage == 'Passage' or action.stage == 'Amendment Vote'):
                     actionId = int(action.actionId)
-                    print 'bill: %d has actionId: %d' % (billNum, actionId)
+                    print('bill: %d has actionId: %d' % (billNum, actionId))
                     actionIdList.append(actionId)
                     billTitleList.append(line.strip().split('\t')[1])
         except:
-            print "problem getting bill %d" % billNum
+            print("problem getting bill %d" % billNum)
         sleep(1)                                      #delay to be polite
     return actionIdList, billTitleList
         
@@ -133,7 +137,7 @@ def getTransList(actionIdList, billTitleList): #this will return a list of lists
     voteCount = 2
     for actionId in actionIdList:
         sleep(3)
-        print 'getting votes for actionId: %d' % actionId
+        print('getting votes for actionId: %d' % actionId)
         try:
             voteList = votesmart.votes.getBillActionVotes(actionId)
             for vote in voteList:
@@ -148,6 +152,6 @@ def getTransList(actionIdList, billTitleList): #this will return a list of lists
                 elif vote.action == 'Yea':
                     transDict[vote.candidateName].append(voteCount + 1)
         except: 
-            print "problem getting actionId: %d" % actionId
+            print("problem getting actionId: %d" % actionId)
         voteCount += 2
     return transDict, itemMeaning
