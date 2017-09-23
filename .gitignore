@@ -7,4 +7,3 @@ Homestead.json
 *.pyc
 *pycache*
 /*/__pycache__/
-syslog.py
