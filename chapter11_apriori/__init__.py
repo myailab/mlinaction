@@ -7,17 +7,20 @@
 import chapter11_apriori.apriori as ap
 
 if __name__ == "__main__":
-    print("aaa")
+    type = 'testApriori'
 
-    #手写识别系统测试
-    #type = 'handwritingTest'
-
-
-    #测试约会网站配对效果
-    type = 'datingTest'
-
-    if ( type == 'handwritingTest' ):
-        print('apriori')
+    if ( type == 'testApriori' ):
+        print('Apriori算法测试')
+        dataset = ap.loadDataSet()
+        L, suppData = ap.apriori(dataset, minSupport=0.5)
+        rules = ap.generateRules(L, suppData, minConf=0.7)
+        print(rules)
+        exit()
+        C1 = ap.createC1(dataset)
+        D  = map(set, dataset)
+        L1, suppData0 = ap.scanD(D, C1, 0.5)
+        print('L1:', L1)
+        print('suppData0:', suppData0)
         # knn.handwritingClassTest()
     elif ( type == 'datingTest' ):
         print('apriori')

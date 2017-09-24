@@ -4,6 +4,7 @@ Created on Oct 19, 2010
 @author: Peter
 '''
 from numpy import *
+import builtins
 import sys
 import syslog
 
@@ -43,7 +44,7 @@ def setOfWords2Vec(vocabList, inputSet):
         @:param inputSet 数组
         @:return returnVec 列表
     '''
-    returnVec = [0] * len(vocabList)
+    returnVec = [0] * builtins.len(vocabList)
     for word in inputSet:
         if word in vocabList:
             returnVec[vocabList.index(word)] = 1
