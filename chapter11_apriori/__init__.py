@@ -7,7 +7,8 @@
 import chapter11_apriori.apriori as ap
 
 if __name__ == "__main__":
-    type = 'testApriori'
+    #type = 'testApriori'
+    type = 'mushroomtest'
 
     if ( type == 'testApriori' ):
         print('Apriori算法测试')
@@ -22,8 +23,12 @@ if __name__ == "__main__":
         print('L1:', L1)
         print('suppData0:', suppData0)
         # knn.handwritingClassTest()
-    elif ( type == 'datingTest' ):
+    elif ( type == 'mushroomtest' ):
         print('apriori')
+        mushDataSet = [line.split() for line in open('mushroom.dat').readlines()]
+        L, suppData = ap.apriori(mushDataSet, minSupport=0.1)
+        for item in L[1]:
+            if item.intersection('2'): print(item)
         # filePath = "testdata\\datingTestSet2.txt"
         # knn.datingClassTest(filePath)
     else :
