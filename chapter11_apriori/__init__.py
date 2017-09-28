@@ -24,11 +24,15 @@ if __name__ == "__main__":
         print('suppData0:', suppData0)
         # knn.handwritingClassTest()
     elif ( type == 'mushroomtest' ):
-        print('apriori')
+        print('mushroomtest')
         mushDataSet = [line.split() for line in open('mushroom.dat').readlines()]
         L, suppData = ap.apriori(mushDataSet, minSupport=0.1)
         for item in L[1]:
-            if item.intersection('2'): print(item)
+            #intersection:求集合的交集
+            if item.intersection('2'):
+                print(item+"\n")
+                exit()
+
         # filePath = "testdata\\datingTestSet2.txt"
         # knn.datingClassTest(filePath)
     else :

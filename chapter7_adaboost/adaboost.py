@@ -4,6 +4,7 @@ Adaboost is short for Adaptive Boosting
 @author: Peter
 '''
 from numpy import *
+import builtins
 
 def loadSimpData():
     datMat = matrix([[ 1. ,  2.1],
@@ -15,7 +16,7 @@ def loadSimpData():
     return datMat,classLabels
 
 def loadDataSet(fileName):      #general function to parse tab -delimited floats
-    numFeat = len(open(fileName).readline().split('\t')) #get number of fields 
+    numFeat = builtins.len(open(fileName).readline().split('\t')) #get number of fields
     dataMat = []; labelMat = []
     fr = open(fileName)
     for line in fr.readlines():
@@ -28,6 +29,14 @@ def loadDataSet(fileName):      #general function to parse tab -delimited floats
     return dataMat,labelMat
 
 def stumpClassify(dataMatrix,dimen,threshVal,threshIneq):#just classify the data
+    '''
+    通过阈值比较对数据进行分类
+    :param dataMatrix:
+    :param dimen:
+    :param threshVal:
+    :param threshIneq:
+    :return:
+    '''
     retArray = ones((shape(dataMatrix)[0],1))
     if threshIneq == 'lt':
         retArray[dataMatrix[:,dimen] <= threshVal] = -1.0
@@ -37,11 +46,13 @@ def stumpClassify(dataMatrix,dimen,threshVal,threshIneq):#just classify the data
     
 
 def buildStump(dataArr,classLabels,D):
+    #构造单层决策树
     dataMatrix = mat(dataArr); labelMat = mat(classLabels).T
     m,n = shape(dataMatrix)
-    numSteps = 10.0; bestStump = {}; bestClasEst = mat(zeros((m,1)))
-    minError = inf #init error sum, to +infinity
-    for i in range(n):#loop over all dimensions
+    numSteps = 10.0     #用于在所有可能值上进行遍历
+    bestStump = {}; bestClasEst = mat(zeros((m,1)))
+    minError = inf #init error sum, to +infinity 将最小错误率设置为正无穷， 之后用于寻找可能的最小错误率
+    for i in range(n):#loop over all dimensions 遍历数据集的所有特征
         rangeMin = dataMatrix[:,i].min(); rangeMax = dataMatrix[:,i].max(); stepSize = (rangeMax-rangeMin)/numSteps
         for j in range(-1,int(numSteps)+1):#loop over all range in current dimension
             for inequal in ['lt', 'gt']: #go over less than and greater than
@@ -88,7 +99,7 @@ def adaClassify(datToClass,classifierArr):
     dataMatrix = mat(datToClass)#do stuff similar to last aggClassEst in adaBoostTrainDS
     m = shape(dataMatrix)[0]
     aggClassEst = mat(zeros((m,1)))
-    for i in range(len(classifierArr)):
+    for i in range(builtins.len(classifierArr)):
         classEst = stumpClassify(dataMatrix,classifierArr[i]['dim'],
                                  classifierArr[i]['thresh'],
                                  classifierArr[i]['ineq'])#call stump classify
@@ -101,7 +112,7 @@ def plotROC(predStrengths, classLabels):
     cur = (1.0,1.0) #cursor
     ySum = 0.0 #variable to calculate AUC
     numPosClas = sum(array(classLabels)==1.0)
-    yStep = 1/float(numPosClas); xStep = 1/float(len(classLabels)-numPosClas)
+    yStep = 1/float(numPosClas); xStep = 1/float(builtins.len(classLabels)-numPosClas)
     sortedIndicies = predStrengths.argsort()#get sorted index, it's reverse
     fig = plt.figure()
     fig.clf()

@@ -43,7 +43,7 @@ def scanD(D, Ck, minSupport):
     print('numItems:', numItems)
     retList     = []
     supportData = {}
-    print('ssCnt:', ssCnt)
+    #print('ssCnt:', ssCnt)
     for key in ssCnt:
         #计算所有项集的支持度
         if ( numItems == 0 ):
