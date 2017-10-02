@@ -37,7 +37,7 @@ def stumpClassify(dataMatrix,dimen,threshVal,threshIneq):#just classify the data
     :param threshIneq:
     :return:
     '''
-    retArray = ones((shape(dataMatrix)[0],1))
+    retArray = ones((shape(dataMatrix)[0],1))   #创建一个n行1列的矩阵
     if threshIneq == 'lt':
         retArray[dataMatrix[:,dimen] <= threshVal] = -1.0
     else:
@@ -46,7 +46,13 @@ def stumpClassify(dataMatrix,dimen,threshVal,threshIneq):#just classify the data
     
 
 def buildStump(dataArr,classLabels,D):
-    #构造单层决策树
+    '''
+    构造单层决策树
+    :param dataArr:
+    :param classLabels:
+    :param D:
+    :return:
+    '''
     dataMatrix = mat(dataArr); labelMat = mat(classLabels).T
     m,n = shape(dataMatrix)
     numSteps = 10.0     #用于在所有可能值上进行遍历
@@ -61,7 +67,7 @@ def buildStump(dataArr,classLabels,D):
                 errArr = mat(ones((m,1)))
                 errArr[predictedVals == labelMat] = 0
                 weightedError = D.T*errArr  #calc total error multiplied by D
-                #print "split: dim %d, thresh %.2f, thresh ineqal: %s, the weighted error is %.3f" % (i, threshVal, inequal, weightedError)
+                #print("split: dim %d, thresh %.2f, thresh ineqal: %s, the weighted error is %.3f" % (i, threshVal, inequal, weightedError))
                 if weightedError < minError:
                     minError = weightedError
                     bestClasEst = predictedVals.copy()
@@ -72,23 +78,30 @@ def buildStump(dataArr,classLabels,D):
 
 
 def adaBoostTrainDS(dataArr,classLabels,numIt=40):
+    '''
+    基于单层决策树的AdaBoost训练过程
+    :param dataArr:
+    :param classLabels:
+    :param numIt:
+    :return:
+    '''
     weakClassArr = []
     m = shape(dataArr)[0]
     D = mat(ones((m,1))/m)   #init D to all equal
     aggClassEst = mat(zeros((m,1)))
     for i in range(numIt):
         bestStump,error,classEst = buildStump(dataArr,classLabels,D)#build Stump
-        #print "D:",D.T
+        #print("D:",D.T)
         alpha = float(0.5*log((1.0-error)/max(error,1e-16)))#calc alpha, throw in max(error,eps) to account for error=0
         bestStump['alpha'] = alpha  
         weakClassArr.append(bestStump)                  #store Stump Params in Array
-        #print "classEst: ",classEst.T
+        #print("classEst: ",classEst.T)
         expon = multiply(-1*alpha*mat(classLabels).T,classEst) #exponent for D calc, getting messy
         D = multiply(D,exp(expon))                              #Calc New D for next iteration
         D = D/D.sum()
         #calc training error of all classifiers, if this is 0 quit for loop early (use break)
         aggClassEst += alpha*classEst
-        #print "aggClassEst: ",aggClassEst.T
+        #print("aggClassEst: ",aggClassEst.T)
         aggErrors = multiply(sign(aggClassEst) != mat(classLabels).T,ones((m,1)))
         errorRate = aggErrors.sum()/m
         print("total error: ",errorRate)
@@ -96,15 +109,21 @@ def adaBoostTrainDS(dataArr,classLabels,numIt=40):
     return weakClassArr,aggClassEst
 
 def adaClassify(datToClass,classifierArr):
+    '''
+    AdaBoost分类函数
+    :param datToClass:
+    :param classifierArr:
+    :return:
+    '''
     dataMatrix = mat(datToClass)#do stuff similar to last aggClassEst in adaBoostTrainDS
     m = shape(dataMatrix)[0]
     aggClassEst = mat(zeros((m,1)))
     for i in range(builtins.len(classifierArr)):
-        classEst = stumpClassify(dataMatrix,classifierArr[i]['dim'],
-                                 classifierArr[i]['thresh'],
-                                 classifierArr[i]['ineq'])#call stump classify
-        aggClassEst += classifierArr[i]['alpha']*classEst
-        print(aggClassEst)
+        classEst = stumpClassify(dataMatrix,classifierArr[0][i]['dim'],
+                                 classifierArr[0][i]['thresh'],
+                                 classifierArr[0][i]['ineq'])#call stump classify
+        aggClassEst += classifierArr[0][i]['alpha']*classEst
+        #print(aggClassEst)
     return sign(aggClassEst)
 
 def plotROC(predStrengths, classLabels):

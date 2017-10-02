@@ -55,6 +55,12 @@ def scanD(D, Ck, minSupport):
     return retList, supportData
 
 def aprioriGen(Lk, k): #creates Ck
+    '''
+    生成Ck
+    :param Lk:
+    :param k:
+    :return:
+    '''
     retList = []
     lenLk = builtins.len(Lk)
     for i in range(lenLk):
