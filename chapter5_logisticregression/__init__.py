@@ -7,7 +7,17 @@
 
 import chapter5_logisticregression.logRegress as lr
 
-dataArr, labelMat = lr.loadDataSet()
-weights = lr.gradAscent(dataArr, labelMat)
+pross_type = 'horse'
 
-lr.plotBestFit(weights.getA())
+if __name__ == '__main__':
+    if ( pross_type == 'test' ) :
+        dataArr, labelMat = lr.loadDataSet()
+        weights = lr.gradAscent(dataArr, labelMat)
+
+        lr.plotBestFit(weights.getA())
+    elif ( pross_type == 'horse' ) :
+        '''
+        从疝气病症预测马的死亡率
+        '''
+        print('horse')
+        lr.multiTest()

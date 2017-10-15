@@ -13,6 +13,7 @@ Output:     the most popular class label
 '''
 from numpy import *
 import operator
+import builtins
 from os import listdir
 
 def classify0(inX, dataSet, labels, k):
@@ -64,7 +65,7 @@ def file2matrix(filename):
 
     '''
     fr = open(filename)
-    numberOfLines = len(fr.readlines())  # get the number of lines in the file
+    numberOfLines = builtins.len(fr.readlines())  # get the number of lines in the file
     '''
         zeros(行，列):返回一个给定形状和类型的用0填充的数组
         zeros(shape, dtype=float, order='c')
@@ -125,7 +126,7 @@ def img2vector(filename):
 def handwritingClassTest():
     hwLabels = []
     trainingFileList = listdir('trainingDigits')  # load the training set
-    m = len(trainingFileList)
+    m = builtins.len(trainingFileList)
     trainingMat = zeros((m, 1024))
     for i in range(m):
         fileNameStr = trainingFileList[i]
@@ -135,7 +136,7 @@ def handwritingClassTest():
         trainingMat[i, :] = img2vector('trainingDigits/%s' % fileNameStr)
     testFileList = listdir('testDigits')  # iterate through the test set
     errorCount = 0.0
-    mTest = len(testFileList)
+    mTest = builtins.len(testFileList)
     for i in range(mTest):
         fileNameStr = testFileList[i]
         fileStr = fileNameStr.split('.')[0]  # take off .txt

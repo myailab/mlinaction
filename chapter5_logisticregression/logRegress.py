@@ -4,7 +4,7 @@ Logistic Regression Working Module
 @author: Peter
 '''
 from numpy import *
-
+import builtins
 
 def loadDataSet():
     dataMat = []; labelMat = []
@@ -21,7 +21,7 @@ def sigmoid(inX):
     '''
         sigmoid阶跃函数
     '''
-    return 1.0 / (1 + exp(-inX))
+    return longfloat(1.0 / (1 + exp(-inX)))
 
 
 def gradAscent(dataMatIn, classLabels):
@@ -93,10 +93,10 @@ def stocGradAscent1(dataMatrix, classLabels, numIter=150):
     m, n = shape(dataMatrix)
     weights = ones(n)  # initialize to all ones
     for j in range(numIter):
-        dataIndex = range(m)
+        dataIndex = list(range(m))
         for i in range(m):
             alpha = 4 / (1.0 + j + i) + 0.0001  # apha decreases with iteration, does not
-            randIndex = int(random.uniform(0, len(dataIndex)))  # go to 0 because of the constant
+            randIndex = int(random.uniform(0, builtins.len(dataIndex)))  # go to 0 because of the constant
             h = sigmoid(sum(dataMatrix[randIndex] * weights))
             error = classLabels[randIndex] - h
             weights = weights + alpha * error * dataMatrix[randIndex]
@@ -113,10 +113,8 @@ def classifyVector(inX, weights):
 
 
 def colicTest():
-    frTrain = open('horseColicTraining.txt');
-    frTest = open('horseColicTest.txt')
-    trainingSet = [];
-    trainingLabels = []
+    frTrain = open('testData\horseColicTraining.txt');frTest = open('testData\horseColicTest.txt')
+    trainingSet = [];trainingLabels = []
     for line in frTrain.readlines():
         currLine = line.strip().split('\t')
         lineArr = []
@@ -125,8 +123,7 @@ def colicTest():
         trainingSet.append(lineArr)
         trainingLabels.append(float(currLine[21]))
     trainWeights = stocGradAscent1(array(trainingSet), trainingLabels, 1000)
-    errorCount = 0;
-    numTestVec = 0.0
+    errorCount = 0;numTestVec = 0.0
     for line in frTest.readlines():
         numTestVec += 1.0
         currLine = line.strip().split('\t')

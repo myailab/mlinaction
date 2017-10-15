@@ -40,7 +40,7 @@ def scanD(D, Ck, minSupport):
                 if can not in ssCnt: ssCnt[can]=1
                 else: ssCnt[can] += 1
     numItems    = float(builtins.len(D_list))
-    print('numItems:', numItems)
+    #print('numItems:', numItems)
     retList     = []
     supportData = {}
     #print('ssCnt:', ssCnt)
@@ -90,7 +90,10 @@ def apriori(dataSet, minSupport = 0.5):
 
 def generateRules(L, supportData, minConf=0.7):  #supportData is a dict coming from scanD
     bigRuleList = []
-    for i in range(1, builtins.len(L)):#only get the sets with two or more items
+    print("confidence:")
+    for i in range(1, builtins.len(L)):
+        #only get the sets with two or more items
+        # 只获取有两个或更多元素的集合
         for freqSet in L[i]:
             H1 = [frozenset([item]) for item in freqSet]
             if (i > 1):
@@ -100,10 +103,20 @@ def generateRules(L, supportData, minConf=0.7):  #supportData is a dict coming f
     return bigRuleList         
 
 def calcConf(freqSet, H, supportData, brl, minConf=0.7):
+    '''
+    计算置信度
+    :param freqSet:
+    :param H:
+    :param supportData:
+    :param brl:
+    :param minConf:
+    :return:
+    '''
     prunedH = [] #create new list to return
     for conseq in H:
+        #计算置信度
         conf = supportData[freqSet]/supportData[freqSet-conseq] #calc confidence
-        if conf >= minConf: 
+        if conf >= minConf:
             print(freqSet-conseq,'-->',conseq,'conf:',conf)
             brl.append((freqSet-conseq, conseq, conf))
             prunedH.append(conseq)
