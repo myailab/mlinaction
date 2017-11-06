@@ -62,8 +62,8 @@ def trainNB0(trainMatrix, trainCategory):
         @:return
         @:return
     '''
-    numTrainDocs = len(trainMatrix)
-    numWords = len(trainMatrix[0])
+    numTrainDocs = builtins.len(trainMatrix)
+    numWords = builtins.len(trainMatrix[0])
     pAbusive = sum(trainCategory) / float(numTrainDocs)
     p0Num = ones(numWords)
     p1Num = ones(numWords)  # change to ones()
@@ -91,7 +91,7 @@ def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
 
 
 def bagOfWords2VecMN(vocabList, inputSet):
-    returnVec = [0] * len(vocabList)
+    returnVec = [0] * builtins.len(vocabList)
     for word in inputSet:
         if word in vocabList:
             returnVec[vocabList.index(word)] += 1
@@ -123,7 +123,7 @@ def textParse(fileNum, type):  # input is big string, #output is word list
         bigString = openFile(fileNum, type)
         if ( bigString != '' ):
             listOfTokens = re.split(r'\W*', bigString)
-            return [tok.lower() for tok in listOfTokens if len(tok) > 2]
+            return [tok.lower() for tok in listOfTokens if builtins.len(tok) > 2]
     except Exception as ex:
         print(ex)
         print(sys.exc_info())
@@ -149,8 +149,9 @@ def openFile(fileNum, type):
         filename = 'email/spam/'+str(fileNum)+'.txt'
     else :
         filename = 'email/ham/' + str(fileNum) + '.txt'
+    infile1 = ''
     try:
-        bytes = min(32, os.path.getsize(filename))
+        bytes = builtins.min(32, os.path.getsize(filename))
         raw = open(filename, 'rb').read(bytes)
 
         if raw.startswith(codecs.BOM_UTF8):
@@ -159,12 +160,12 @@ def openFile(fileNum, type):
             result = chardet.detect(raw)
             encoding = result['encoding']
 
-        infile = io.open(filename, 'r', encoding=encoding)
+        infile1 = io.open(filename, 'r', encoding=encoding)
     except Exception as ex:
         saveLog(ex)
         print(ex)
         exit(1)
-    return infile.read()
+    return infile1.read()
 
 
 def saveLog(logstr):
@@ -195,7 +196,7 @@ def spamTest():
     #trainingSet = range(50)
     trainingSet = list(range(50));testSet = []  # create test set
     for i in range(10):
-        randIndex = int(random.uniform(0, len(trainingSet)))
+        randIndex = int(random.uniform(0, builtins.len(trainingSet)))
         testSet.append(trainingSet[randIndex])
         '''
         python3中range不返回数组对象，而是返回range对象
@@ -215,7 +216,7 @@ def spamTest():
         if classifyNB(array(wordVector), p0V, p1V, pSpam) != classList[docIndex]:
             errorCount += 1
             print("classification error", docList[docIndex])
-    print('the error rate is: ', float(errorCount) / len(testSet))
+    print('the error rate is: ', float(errorCount) / builtins.len(testSet))
     # return vocabList,fullText
 
 
@@ -233,7 +234,7 @@ def localWords(feed1, feed0):
     docList   = []
     classList = []
     fullText  = []
-    minLen    = min(len(feed1['entries']), len(feed0['entries']))
+    minLen    = builtins.min(builtins.len(feed1['entries']), builtins.len(feed0['entries']))
     for i in range(minLen):
         wordList = textParse(feed1['entries'][i]['summary'])
         docList.append(wordList)
@@ -250,7 +251,7 @@ def localWords(feed1, feed0):
     trainingSet = range(2 * minLen)
     testSet = []  # create test set
     for i in range(20):
-        randIndex = int(random.uniform(0, len(trainingSet)))
+        randIndex = int(random.uniform(0, builtins.len(trainingSet)))
         testSet.append(trainingSet[randIndex])
         del (trainingSet[randIndex])
     trainMat = []
@@ -264,7 +265,7 @@ def localWords(feed1, feed0):
         wordVector = bagOfWords2VecMN(vocabList, docList[docIndex])
         if classifyNB(array(wordVector), p0V, p1V, pSpam) != classList[docIndex]:
             errorCount += 1
-    print('the error rate is: ', float(errorCount) / len(testSet))
+    print('the error rate is: ', float(errorCount) / builtins.len(testSet))
     return vocabList, p0V, p1V
 
 
@@ -273,7 +274,7 @@ def getTopWords(ny, sf):
     vocabList, p0V, p1V = localWords(ny, sf)
     topNY = []
     topSF = []
-    for i in range(len(p0V)):
+    for i in range(builtins.len(p0V)):
         if p0V[i] > -6.0: topSF.append((vocabList[i], p0V[i]))
         if p1V[i] > -6.0: topNY.append((vocabList[i], p1V[i]))
     sortedSF = sorted(topSF, key=lambda pair: pair[1], reverse=True)

@@ -27,7 +27,7 @@ def sigmoid(inX):
 def gradAscent(dataMatIn, classLabels):
     print('dataMatIn before converted:\n', dataMatIn)
     dataMatrix = mat(dataMatIn)  # convert to NumPy matrix  转换成Numpy矩阵
-    print('dataMatIn after converted:\n', dataMatrix);
+    print('dataMatIn after converted:\n', dataMatrix)
     print('classLabels before transposed:\n', classLabels)
     print('classLabels in numpy format:\n', mat(classLabels))
     labelMat = mat(classLabels).transpose()  # convert to NumPy matrix  转换成Numpy矩阵

@@ -8,15 +8,21 @@ import chapter7_adaboost.adaboost as ada
 from numpy import *
 
 if __name__ == '__main__':
-    #type = "buildstump"
+    type = "builds#tump"
     #type = "trainingAdaBoost"
-    type = "hardataset"
+    # type = "hardataset"
+    type = 'plotroc'
 
     dataMat, classLabels = ada.loadSimpData()
 
     if (type == "buildstump") :
         print("单层决策树生成函数：")
+        #D是一个概率分布向量，因此其所有的元素之和为1.0。为了满足此要求，一开始的所有元素都会被初始化成1/m.
         D = mat(ones((5,1))/5)
+        D1 = mat(ones((5,1)))
+        print(D)
+        print(D1)
+        exit()
         bestStump, minError, bestClasEst = ada.buildStump(dataMat, classLabels, D)
         print('bestStump（字典）:', bestStump)
         print('minError（最小错误率）:', minError)
@@ -35,6 +41,12 @@ if __name__ == '__main__':
         errArr = mat(ones((67,1)))
         errArrSum = errArr[prediction10 != mat(testLabelArr).T].sum()
         print("errArrSum:", errArrSum)
+    elif ( type == 'plotroc' ):
+        #ROC曲线的绘制及AUC计算函数
+        datArr, labelArr = ada.loadDataSet('horseColicTraining2.txt')
+        classifierArray, aggClassEst = ada.adaBoostTrainDS(datArr, labelArr)
+        ada.plotROC(aggClassEst.T, labelArr)
+
     else:
         print("else")
 

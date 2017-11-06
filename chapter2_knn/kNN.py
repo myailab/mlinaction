@@ -19,8 +19,7 @@ from os import listdir
 def classify0(inX, dataSet, labels, k):
     '''
         k近邻算法
-    '''
-    '''
+
         shape函数是numpy.core.formnumeric中的函数，它的功能是读取矩阵的长度
         shape[0]:读取矩阵第一维的长度
         先返回列，后返回行
@@ -124,6 +123,10 @@ def img2vector(filename):
 
 
 def handwritingClassTest():
+    '''
+    手写识别系统->测试数据
+    :return:
+    '''
     hwLabels = []
     trainingFileList = listdir('trainingDigits')  # load the training set
     m = builtins.len(trainingFileList)
