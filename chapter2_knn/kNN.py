@@ -1,4 +1,4 @@
-'''
+"""
 Created on Sep 16, 2010
 kNN: k Nearest Neighbors
 
@@ -10,47 +10,56 @@ Input:      inX: vector to compare to existing dataset (1xN)
 Output:     the most popular class label
 
 @author: pbharrin
-'''
+"""
 from numpy import *
 import operator
 import builtins
 from os import listdir
 
-def classify0(inX, dataSet, labels, k):
-    '''
-        k近邻算法
 
+def classify0(inX, dataSet, labels, k):
+    """
+    k近邻算法
+
+    :param inX:
+    :param dataSet:
+    :param labels:
+    :param k:
+    :return:
+    """
+    """
         shape函数是numpy.core.formnumeric中的函数，它的功能是读取矩阵的长度
         shape[0]:读取矩阵第一维的长度
         先返回列，后返回行
-    '''
+    """
     dataSetSize = dataSet.shape[0]
-    '''
+    """
         tile(矩阵，(行，列))
         如果只有一维，则是列方向重复
-    '''
+    """
     diffMat = tile(inX, (dataSetSize, 1)) - dataSet
-    sqDiffMat = diffMat ** 2    #平方
-    '''
+    sqDiffMat = diffMat ** 2    # 平方
+    """
         sum():参数为1：行求和，参数为0：列求和
-    '''
+    """
     sqDistances = sqDiffMat.sum(axis=1)
-    distances = sqDistances ** 0.5  #开平方
-    ''' 
+    distances = sqDistances ** 0.5  # 开平方
+    """ 
         argsort():返回数组从小到大的索引值，如果是二维数组
             argsort(x, axis=0):列排序
             argsort(x, axis=1):行排序
             argsort(x):升序
             argsort(-x):降序
-    '''
+    """
     sortedDistIndicies = distances.argsort()
     classCount = {}
     for i in range(k):
         voteIlabel = labels[sortedDistIndicies[i]]
         classCount[voteIlabel] = classCount.get(voteIlabel, 0) + 1
-    #sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
+    # sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
     sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
+
 
 def createDataSet():
     group = array([[1.0, 1.1], [1.0, 1.0], [0, 0], [0, 0.1]])
@@ -59,18 +68,18 @@ def createDataSet():
 
 
 def file2matrix(filename):
-    '''
+    """
         从文本中读取数据
 
-    '''
+    """
     fr = open(filename)
     numberOfLines = builtins.len(fr.readlines())  # get the number of lines in the file
-    '''
+    """
         zeros(行，列):返回一个给定形状和类型的用0填充的数组
         zeros(shape, dtype=float, order='c')
         c:行优先
         F:列优先
-    '''
+    """
     returnMat = zeros((numberOfLines, 3))  # prepare matrix to return
     classLabelVector = []  # prepare labels return
     fr = open(filename)
@@ -97,7 +106,7 @@ def autoNorm(dataSet):
 
 def datingClassTest(filePath):
     hoRatio = 0.50  # hold out 10%
-    #datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')  # load data setfrom file
+    # datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')  # load data setfrom file
     datingDataMat, datingLabels = file2matrix(filePath)  # load data setfrom file
     normMat, ranges, minVals = autoNorm(datingDataMat)
     m = normMat.shape[0]
@@ -107,7 +116,8 @@ def datingClassTest(filePath):
         classifierResult = classify0(normMat[i, :], normMat[numTestVecs:m, :], datingLabels[numTestVecs:m], 3)
         print("the classifier came back with: %d, the real answer is: %d" \
               % (classifierResult, datingLabels[i]))
-        if (classifierResult != datingLabels[i]): errorCount += 1.0
+        if classifierResult != datingLabels[i]:
+            errorCount += 1.0
     print("the total error rate is: %f" % (errorCount / float(numTestVecs)))
     print(errorCount)
 
@@ -123,10 +133,11 @@ def img2vector(filename):
 
 
 def handwritingClassTest():
-    '''
+    """
     手写识别系统->测试数据
+
     :return:
-    '''
+    """
     hwLabels = []
     trainingFileList = listdir('trainingDigits')  # load the training set
     m = builtins.len(trainingFileList)
@@ -147,6 +158,7 @@ def handwritingClassTest():
         vectorUnderTest = img2vector('testDigits/%s' % fileNameStr)
         classifierResult = classify0(vectorUnderTest, trainingMat, hwLabels, 3)
         print("the classifier came back with: %d, the real answer is: %d" % (classifierResult, classNumStr))
-        if (classifierResult != classNumStr): errorCount += 1.0
+        if classifierResult != classNumStr:
+            errorCount += 1.0
     print("\nthe total number of errors is: %d" % errorCount)
     print("\nthe total error rate is: %f" % (errorCount / float(mTest)))

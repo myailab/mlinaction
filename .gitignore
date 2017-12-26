@@ -1,3 +1,4 @@
+.gitignore
 /vendor
 /node_modules
 Homestead.yaml
@@ -7,3 +8,4 @@ Homestead.json
 *.pyc
 *pycache*
 /*/__pycache__/
+/chapter11_apriori/data.csv
