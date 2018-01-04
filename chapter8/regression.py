@@ -110,7 +110,7 @@ def stageWise(xArr,yArr,eps=0.01,numIt=100):
     ws = zeros((n,1)); wsTest = ws.copy(); wsMax = ws.copy()
     for i in range(numIt):
         print(ws.T)
-        lowestError = inf; 
+        lowestError = inf;
         for j in range(n):
             for sign in [-1,1]:
                 wsTest = ws.copy()
@@ -166,20 +166,22 @@ def searchForSet(retX, retY, setNum, yr, numPce, origPrc):
     # pg = urllib2.urlopen(searchURL)
     pg = urllib.request.urlopen(searchURL)
     retDict = json.loads(pg.read())
-    for i in range(len(retDict['items'])):
+    for i in range(builtins.len(retDict['items'])):
         try:
             currItem = retDict['items'][i]
             if currItem['product']['condition'] == 'new':
                 newFlag = 1
-            else: newFlag = 0
+            else:
+                newFlag = 0
             listOfInv = currItem['product']['inventories']
             for item in listOfInv:
                 sellingPrice = item['price']
-                if  sellingPrice > origPrc * 0.5:
-                    print("%d\t%d\t%d\t%f\t%f" % (yr,numPce,newFlag,origPrc, sellingPrice))
+                if sellingPrice > origPrc * 0.5:
+                    print("%d\t%d\t%d\t%f\t%f" % (yr, numPce, newFlag, origPrc, sellingPrice))
                     retX.append([yr, numPce, newFlag, origPrc])
                     retY.append(sellingPrice)
-        except: print('problem with item %d' % i)
+        except:
+            print('problem with item %d' % i)
 
 
 def setDataCollect(retX, retY):
@@ -191,38 +193,43 @@ def setDataCollect(retX, retY):
     searchForSet(retX, retY, 10196, 2009, 3263, 249.99)
 
 
-def crossValidation(xArr,yArr,numVal=10):
-    m = len(yArr)                           
+def crossValidation(xArr, yArr, numVal=10):
+    m = builtins.len(yArr)
     indexList = range(m)
-    errorMat = zeros((numVal,30))  # create error mat 30columns numVal rows
+    errorMat = zeros((numVal, 30))  # create error mat 30columns numVal rows
     for i in range(numVal):
-        trainX=[]; trainY=[]
-        testX = []; testY = []
+        trainX = []
+        trainY = []
+        testX = []
+        testY = []
         random.shuffle(indexList)
         for j in range(m):  # create training set based on first 90% of values in indexList
-            if j < m*0.9: 
+            if j < m*0.9:
                 trainX.append(xArr[indexList[j]])
                 trainY.append(yArr[indexList[j]])
             else:
                 testX.append(xArr[indexList[j]])
                 testY.append(yArr[indexList[j]])
-        wMat = ridgeTest(trainX,trainY)    # get 30 weight vectors from ridge
+        wMat = ridgeTest(trainX, trainY)    # get 30 weight vectors from ridge
         for k in range(30):  # loop over all of the ridge estimates
-            matTestX = mat(testX); matTrainX=mat(trainX)
-            meanTrain = mean(matTrainX,0)
-            varTrain = var(matTrainX,0)
+            matTestX = mat(testX)
+            matTrainX = mat(trainX)
+            meanTrain = mean(matTrainX, 0)
+            varTrain = var(matTrainX, 0)
             matTestX = (matTestX-meanTrain)/varTrain  # regularize test with training params
-            yEst = matTestX * mat(wMat[k,:]).T + mean(trainY)  # test ridge results and store
-            errorMat[i,k]=rssError(yEst.T.A,array(testY))
+            yEst = matTestX * mat(wMat[k, :]).T + mean(trainY)  # test ridge results and store
+            errorMat[i, k]=rssError(yEst.T.A, array(testY))
             # print errorMat[i,k]
-    meanErrors = mean(errorMat,0)  # calc avg performance of the different ridge weight vectors
+    meanErrors = mean(errorMat, 0)  # calc avg performance of the different ridge weight vectors
     minMean = float(min(meanErrors))
-    bestWeights = wMat[nonzero(meanErrors==minMean)]
+    bestWeights = wMat[nonzero(meanErrors == minMean)]
     # can unregularize to get model
     # when we regularized we wrote Xreg = (x-meanX)/var(x)
     # we can now write in terms of x not Xreg:  x*w/var(x) - meanX/var(x) +meanY
-    xMat = mat(xArr); yMat=mat(yArr).T
-    meanX = mean(xMat,0); varX = var(xMat,0)
+    xMat = mat(xArr)
+    yMat = mat(yArr).T
+    meanX = mean(xMat, 0)
+    varX = var(xMat, 0)
     unReg = bestWeights/varX
-    print("the best model from Ridge Regression is:\n",unReg)
-    print("with constant term: ",-1*sum(multiply(meanX,unReg)) + mean(yMat))
+    print("the best model from Ridge Regression is:\n", unReg)
+    print("with constant term: ", -1*sum(multiply(meanX, unReg)) + mean(yMat))
