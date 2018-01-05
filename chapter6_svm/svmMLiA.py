@@ -368,8 +368,9 @@ Non-Kernel VErsions below
 #######********************************
 """
 
+
 class optStructK:
-    def __init__(self,dataMatIn, classLabels, C, toler):  # Initialize the structure with the parameters 
+    def __init__(self, dataMatIn, classLabels, C, toler):  # Initialize the structure with the parameters
         self.X = dataMatIn
         self.labelMat = classLabels
         self.C = C
