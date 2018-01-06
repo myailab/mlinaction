@@ -52,13 +52,13 @@ def classify0(inX, dataSet, labels, k):
             argsort(-x):降序
     """
     sortedDistIndicies = distances.argsort()
-    classCount = {}
+    class_count = {}
     for i in range(k):
         voteIlabel = labels[sortedDistIndicies[i]]
-        classCount[voteIlabel] = classCount.get(voteIlabel, 0) + 1
-    # sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
-    sortedClassCount = sorted(classCount.items(), key=operator.itemgetter(1), reverse=True)
-    return sortedClassCount[0][0]
+        class_count[voteIlabel] = class_count.get(voteIlabel, 0) + 1
+    # sorted_class_count = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
+    sorted_class_count = sorted(class_count.items(), key=operator.itemgetter(1), reverse=True)
+    return sorted_class_count[0][0]
 
 
 def createDataSet():
@@ -69,45 +69,53 @@ def createDataSet():
 
 def file2matrix(filename):
     """
-        从文本中读取数据
+    将文件转换成矩阵
 
+    :param filename: 文件的路径
+    :return:
     """
     fr = open(filename)
-    numberOfLines = builtins.len(fr.readlines())  # get the number of lines in the file
+    number_of_lines = builtins.len(fr.readlines())  # get the number of lines in the file
     """
         zeros(行，列):返回一个给定形状和类型的用0填充的数组
         zeros(shape, dtype=float, order='c')
         c:行优先
         F:列优先
     """
-    returnMat = zeros((numberOfLines, 3))  # prepare matrix to return
-    classLabelVector = []  # prepare labels return
+    return_matrix = zeros((number_of_lines, 3))  # prepare matrix to return
+    class_label_vector = []  # prepare labels return
     fr = open(filename)
     index = 0
     for line in fr.readlines():
         line = line.strip()
-        listFromLine = line.split('\t')
-        returnMat[index, :] = listFromLine[0:3]
-        classLabelVector.append(int(listFromLine[-1]))
+        list_from_line = line.split('\t')
+        return_matrix[index, :] = list_from_line[0:3]
+        class_label_vector.append(int(list_from_line[-1]))
         index += 1
-    return returnMat, classLabelVector
+    return return_matrix, class_label_vector
 
 
-def autoNorm(dataSet):
-    minVals = dataSet.min(0)
-    maxVals = dataSet.max(0)
-    ranges = maxVals - minVals
-    normDataSet = zeros(shape(dataSet))
-    m = dataSet.shape[0]
-    normDataSet = dataSet - tile(minVals, (m, 1))
-    normDataSet = normDataSet / tile(ranges, (m, 1))  # element wise divide
-    return normDataSet, ranges, minVals
+def autoNorm(dataset):
+    """
+    归一化数据集
+
+    :param dataset:
+    :return:
+    """
+    min_values = dataset.min(0)
+    max_values = dataset.max(0)
+    ranges = max_values - min_values
+    # normal_dataset = zeros(shape(dataset))
+    m = dataset.shape[0]
+    normal_dataset = dataset - tile(min_values, (m, 1))
+    normal_dataset = normal_dataset / tile(ranges, (m, 1))  # element wise divide
+    return normal_dataset, ranges, min_values
 
 
-def datingClassTest(filePath):
+def datingClassTest(file_path):
     hoRatio = 0.50  # hold out 10%
     # datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')  # load data setfrom file
-    datingDataMat, datingLabels = file2matrix(filePath)  # load data setfrom file
+    datingDataMat, datingLabels = file2matrix(file_path)  # load data setfrom file
     normMat, ranges, minVals = autoNorm(datingDataMat)
     m = normMat.shape[0]
     numTestVecs = int(m * hoRatio)
@@ -123,13 +131,19 @@ def datingClassTest(filePath):
 
 
 def img2vector(filename):
-    returnVect = zeros((1, 1024))
+    """
+    将图片转换成向量
+
+    :param filename:
+    :return:
+    """
+    return_vector = zeros((1, 1024))
     fr = open(filename)
     for i in range(32):
-        lineStr = fr.readline()
+        line_str = fr.readline()
         for j in range(32):
-            returnVect[0, 32 * i + j] = int(lineStr[j])
-    return returnVect
+            return_vector[0, 32 * i + j] = int(line_str[j])
+    return return_vector
 
 
 def handwritingClassTest():

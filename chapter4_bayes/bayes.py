@@ -3,10 +3,12 @@ Created on Oct 19, 2010
 
 @author: Peter
 '''
-from numpy import *
 import builtins
 import sys
-import syslog
+
+from numpy import *
+
+from tools import syslog
 
 
 def loadDataSet():
@@ -230,7 +232,6 @@ def calcMostFreq(vocabList, fullText):
 
 
 def localWords(feed1, feed0):
-    import feedparser
     docList   = []
     classList = []
     fullText  = []
@@ -270,7 +271,6 @@ def localWords(feed1, feed0):
 
 
 def getTopWords(ny, sf):
-    import operator
     vocabList, p0V, p1V = localWords(ny, sf)
     topNY = []
     topSF = []

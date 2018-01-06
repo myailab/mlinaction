@@ -7,11 +7,11 @@ if __name__ == "__main__":
     # type = 'handwritingTest'
 
     # 测试约会网站配对效果
-    type = 'datingTest'
+    method = 'datingTest'
 
-    if type == 'handwritingTest':
+    if method == 'handwritingTest':
         knn.handwritingClassTest()
-    elif type == 'datingTest':
+    elif method == 'datingTest':
         filePath = "testdata\\datingTestSet2.txt"
         knn.datingClassTest(filePath)
     else:

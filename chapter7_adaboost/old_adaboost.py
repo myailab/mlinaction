@@ -14,11 +14,11 @@ def loadDataSet(fileName):
         lineArr = line.strip().split('\t')
         dataMat.append([float(lineArr[0]), float(lineArr[1])])
         labelMat.append(float(lineArr[2]))
-    return dataMat,labelMat
+    return dataMat, labelMat
 
 
 def stumpClassify(dataMatrix, dimen, threshVal, threshIneq):  # just classify the data
-    retArray = ones((shape(dataMatrix)[0],1))
+    retArray = ones((shape(dataMatrix)[0], 1))
     if threshIneq == 'lt':
         retArray[dataMatrix[:,dimen] <= threshVal] = -1.0
     else:
