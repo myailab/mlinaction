@@ -17,12 +17,12 @@ import builtins
 from os import listdir
 
 
-def classify0(inX, dataSet, labels, k):
+def classify0(inX, dataset, labels, k):
     """
     k近邻算法
 
     :param inX:
-    :param dataSet:
+    :param dataset:
     :param labels:
     :param k:
     :return:
@@ -32,12 +32,12 @@ def classify0(inX, dataSet, labels, k):
         shape[0]:读取矩阵第一维的长度
         先返回列，后返回行
     """
-    dataSetSize = dataSet.shape[0]
+    dataSetSize = dataset.shape[0]
     """
         tile(矩阵，(行，列))
         如果只有一维，则是列方向重复
     """
-    diffMat = tile(inX, (dataSetSize, 1)) - dataSet
+    diffMat = tile(inX, (dataSetSize, 1)) - dataset
     sqDiffMat = diffMat ** 2    # 平方
     """
         sum():参数为1：行求和，参数为0：列求和
@@ -114,17 +114,17 @@ def autoNorm(dataset):
 
 def datingClassTest(file_path):
     hoRatio = 0.50  # hold out 10%
-    # datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')  # load data setfrom file
-    datingDataMat, datingLabels = file2matrix(file_path)  # load data setfrom file
-    normMat, ranges, minVals = autoNorm(datingDataMat)
+    # datingDataMat, datingLabels = file2matrix('datingTestSet2.txt')  # load data set from file
+    dating_data_matrix, dating_labels = file2matrix(file_path)  # load data set from file
+    normMat, ranges, min_values = autoNorm(dating_data_matrix)
     m = normMat.shape[0]
     numTestVecs = int(m * hoRatio)
     errorCount = 0.0
     for i in range(numTestVecs):
-        classifierResult = classify0(normMat[i, :], normMat[numTestVecs:m, :], datingLabels[numTestVecs:m], 3)
+        classifierResult = classify0(normMat[i, :], normMat[numTestVecs:m, :], dating_labels[numTestVecs:m], 3)
         print("the classifier came back with: %d, the real answer is: %d"
-              % (classifierResult, datingLabels[i]))
-        if classifierResult != datingLabels[i]:
+              % (classifierResult, dating_labels[i]))
+        if classifierResult != dating_labels[i]:
             errorCount += 1.0
     print("the total error rate is: %f" % (errorCount / float(numTestVecs)))
     print(errorCount)
