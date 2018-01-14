@@ -7,34 +7,35 @@ from numpy import *
 from time import sleep
 import urllib.request
 import json
+import builtins
 
 
-def loadDataSet(fileName):      # general function to parse tab -delimited floats
-    numFeat = builtins.len(open(fileName).readline().split('\t')) - 1  # get number of fields
-    dataMat = []
-    labelMat = []
-    fr = open(fileName)
+def loadDataSet(filename):      # general function to parse tab -delimited floats
+    features = builtins.len(open(filename).readline().split('\t')) - 1  # get number of fields
+    data_matrix = []
+    label_matrix = []
+    fr = open(filename)
     for line in fr.readlines():
-        lineArr = []
-        curLine = line.strip().split('\t')
-        for i in range(numFeat):
-            lineArr.append(float(curLine[i]))
-        dataMat.append(lineArr)
-        labelMat.append(float(curLine[-1]))
-    return dataMat, labelMat
+        line_arr = []
+        cur_line = line.strip().split('\t')
+        for i in range(features):
+            line_arr.append(float(cur_line[i]))
+        data_matrix.append(line_arr)
+        label_matrix.append(float(cur_line[-1]))
+    return data_matrix, label_matrix
 
 
-def standRegres(xArr, yArr):
+def standRegres(x_arr, y_arr):
     """
     标准线性回归，用来计算最佳拟合直线
 
-    :param xArr:
-    :param yArr:
+    :param x_arr:
+    :param y_arr:
     :return:
     """
-    xMat = mat(xArr)
-    yMat = mat(yArr).T
-    xTx = xMat.T*xMat  # 计算x^T.x
+    x_matrix = mat(x_arr)
+    y_matrix = mat(y_arr).T
+    xTx = x_matrix.T * x_matrix  # 计算x^T.x
     """
     linalg为Numpy提供的一个线性代数库，其中包含很多有用的函数
     """
@@ -42,31 +43,53 @@ def standRegres(xArr, yArr):
         # 如果行列式的值为0，则返回错误提示
         print("This matrix is singular, cannot do inverse")
         return
-    ws = xTx.I * (xMat.T*yMat)  # .I, 计算矩阵的逆矩阵
+    ws = xTx.I * (x_matrix.T * y_matrix)  # .I, 计算矩阵的逆矩阵
     return ws
 
 
-def lwlr(testPoint, xArr, yArr, k=1.0):
-    xMat = mat(xArr)
-    yMat = mat(yArr).T
-    m = shape(xMat)[0]
+def lwlr(test_point, x_arr, y_arr, k=1.0):
+    """
+    局部加权线性回归(Locally Weighted Linear Regression， LWLR)
+
+    :param test_point:
+    :param x_arr:
+    :param y_arr:
+    :param k:
+    :return:
+    """
+    x_matrix = mat(x_arr)
+    y_matrix = mat(y_arr).T
+    m = shape(x_matrix)[0]
+    """
+    numpy中的eye()方法，创建一个对角矩阵，参数m为行数
+    """
     weights = mat(eye(m))
     for j in range(m):                      # next 2 lines create weights matrix
-        diffMat = testPoint - xMat[j, :]     #
-        weights[j, j] = exp(diffMat*diffMat.T/(-2.0*k**2))
-    xTx = xMat.T * (weights * xMat)
+        diffMat = test_point - x_matrix[j, :]     #
+        # 权重大小以指数级衰减，输入参数k控制衰减的速度
+        weights[j, j] = exp(diffMat * diffMat.T / (-2.0 * k ** 2))
+    xTx = x_matrix.T * (weights * x_matrix)
     if linalg.det(xTx) == 0.0:
         print("This matrix is singular, cannot do inverse")
         return
-    ws = xTx.I * (xMat.T * (weights * yMat))
-    return testPoint * ws
+    ws = xTx.I * (x_matrix.T * (weights * y_matrix))
+    return test_point * ws
 
 
-def lwlrTest(testArr, xArr, yArr, k=1.0):  # loops over all the data points and applies lwlr to each one
-    m = shape(testArr)[0]
+def lwlrTest(test_arr, x_arr, y_arr, k=1.0):  # loops over all the data points and applies lwlr to each one
+    """
+    局部加权线性回归的测试
+
+    :param test_arr:
+    :param x_arr:
+    :param y_arr:
+    :param k:
+    :return:
+    """
+    m = shape(test_arr)[0]
     yHat = zeros(m)
     for i in range(m):
-        yHat[i] = lwlr(testArr[i], xArr, yArr, k)
+        yHat[i] = lwlr(test_arr[i], x_arr, y_arr, k)
     return yHat
 
 
@@ -83,19 +106,27 @@ def rssError(yArr, yHatArr):  # yArr and yHatArr both need to be arrays
     return ((yArr-yHatArr)**2).sum()
 
 
-def ridgeRegres(xMat, yMat, lam=0.2):
-    xTx = xMat.T*xMat
-    denom = xTx + eye(shape(xMat)[1])*lam
+def ridgeRegres(x_matrix, y_matrix, lam=0.2):
+    """
+    岭回归(ridge regression)：实现了给定lambda下的岭回归求解
+
+    :param x_matrix:
+    :param y_matrix:
+    :param lam:
+    :return:
+    """
+    xTx = x_matrix.T * x_matrix
+    denom = xTx + eye(shape(x_matrix)[1]) * lam
     if linalg.det(denom) == 0.0:
         print("This matrix is singular, cannot do inverse")
         return
-    ws = denom.I * (xMat.T*yMat)
+    ws = denom.I * (x_matrix.T * y_matrix)
     return ws
 
 
-def ridgeTest(xArr, yArr):
-    xMat = mat(xArr)
-    yMat = mat(yArr).T
+def ridgeTest(x_arr, y_arr):
+    xMat = mat(x_arr)
+    yMat = mat(y_arr).T
     yMean = mean(yMat, 0)
     yMat = yMat - yMean     # to eliminate X0 take mean off of Y
     # regularize X's
@@ -110,17 +141,26 @@ def ridgeTest(xArr, yArr):
     return wMat
 
 
-def regularize(xMat):  # regularize by columns
-    inMat = xMat.copy()
+def regularize(x_matrix):  # regularize by columns
+    inMat = x_matrix.copy()
     inMeans = mean(inMat, 0)   # calc mean then subtract it off
     inVar = var(inMat, 0)      # calc variance of Xi then divide by it
     inMat = (inMat - inMeans)/inVar
     return inMat
 
 
-def stageWise(xArr, yArr, eps=0.01, numIt=100):
-    xMat = mat(xArr)
-    yMat = mat(yArr).T
+def stageWise(x_arr, y_arr, eps=0.01, numIt=100):
+    """
+    前向逐步线性回归
+    
+    :param x_arr: 
+    :param y_arr: 
+    :param eps: 
+    :param numIt: 
+    :return: 
+    """
+    xMat = mat(x_arr)
+    yMat = mat(y_arr).T
     yMean = mean(yMat, 0)
     yMat = yMat - yMean     # can also regularize ys but will get smaller coef
     xMat = regularize(xMat)
