@@ -4,7 +4,7 @@
 # @File    : __init__.py
 # @Software: PyCharm
 
-import chapter8.regression as reg
+import chapter8_linearregression.regression as reg
 import matplotlib.pyplot as plt
 from numpy import *
 
@@ -12,7 +12,8 @@ if __name__ == '__main__':
     # method = "stand_regression"
     # method = "lwlr"
     # method = "predict_age_of_abalone"
-    method = "ridge_regression"
+    # method = "ridge_regression"
+    method = "stagewise"
 
     # data_matrix, class_labels = ada.load_simple_data()
 
@@ -73,6 +74,18 @@ if __name__ == '__main__':
         ax = fig.add_subplot(111)
         ax.plot(ridge_weights)
         plt.show()
+    elif method == 'stagewise':
+        print("前向逐步线性回归：")
+        abalone_x, abalone_y = reg.loadDataSet('abalone.txt')
+        reg.stageWise(abalone_x, abalone_y, 0.01, 200)
+        x_matrix = mat(abalone_x)
+        y_matrix = mat(abalone_y).T
+        x_matrix = reg.regularize(x_matrix)
+        y_mean = mean(y_matrix, 0)
+        y_matrix = y_matrix - y_mean
+        weights = reg.standRegres(x_matrix, y_matrix.T)
+        print(weights.T)
+
     else:
         print("没有需要执行的程序")
 

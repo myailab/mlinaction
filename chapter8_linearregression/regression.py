@@ -149,14 +149,14 @@ def regularize(x_matrix):  # regularize by columns
     return inMat
 
 
-def stageWise(x_arr, y_arr, eps=0.01, numIt=100):
+def stageWise(x_arr, y_arr, eps=0.01, times=100):
     """
     前向逐步线性回归
     
     :param x_arr: 
     :param y_arr: 
-    :param eps: 
-    :param numIt: 
+    :param eps: 每次迭代需要调整的步长
+    :param times: 迭代次数
     :return: 
     """
     xMat = mat(x_arr)
@@ -165,25 +165,25 @@ def stageWise(x_arr, y_arr, eps=0.01, numIt=100):
     yMat = yMat - yMean     # can also regularize ys but will get smaller coef
     xMat = regularize(xMat)
     m, n = shape(xMat)
-    # returnMat = zeros((numIt, n))  # testing code remove
+    returnMat = zeros((times, n))  # testing code remove
     ws = zeros((n, 1))
     wsTest = ws.copy()
     wsMax = ws.copy()
-    for i in range(numIt):
+    for i in range(times):
         print(ws.T)
         lowestError = inf
         for j in range(n):
             for sign in [-1, 1]:
                 wsTest = ws.copy()
-                wsTest[j] += eps*sign
-                yTest = xMat*wsTest
+                wsTest[j] += eps * sign
+                yTest = xMat * wsTest
                 rssE = rssError(yMat.A, yTest.A)
                 if rssE < lowestError:
                     lowestError = rssE
                     wsMax = wsTest
         ws = wsMax.copy()
-        # returnMat[i, :]=ws.T
-    # return returnMat
+        returnMat[i, :] = ws.T
+    return returnMat
 
 
 # def scrapePage(inFile, outFile, yr, numPce, origPrc):
@@ -217,6 +217,7 @@ def stageWise(x_arr, y_arr, eps=0.01, numIt=100):
 #     fw.close()
 
 
+# 预测乐高玩具套装的价格，由于缺乏数据，无法实现
 def searchForSet(retX, retY, setNum, yr, numPce, origPrc):
     sleep(10)
     myAPIstr = 'AIzaSyD2cR2KFyx12hXu6PFU-wrWot3NXvko8vY'
