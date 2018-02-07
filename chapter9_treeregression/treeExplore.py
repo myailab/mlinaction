@@ -1,51 +1,62 @@
 from numpy import *
 
-from Tkinter import *
+from tkinter import *
 import regTrees
-
 import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 
-def reDraw(tolS,tolN):
+
+def reDraw(tolS, tolN):
     reDraw.f.clf()        # clear the figure
     reDraw.a = reDraw.f.add_subplot(111)
     if chkBtnVar.get():
-        if tolN < 2: tolN = 2
-        myTree=regTrees.createTree(reDraw.rawDat, regTrees.modelLeaf,\
-                                   regTrees.modelErr, (tolS,tolN))
-        yHat = regTrees.createForeCast(myTree, reDraw.testDat, \
-                                       regTrees.modelTreeEval)
+        if tolN < 2:
+            tolN = 2
+        myTree = regTrees.createTree(reDraw.rawDat, regTrees.modelLeaf, regTrees.modelErr, (tolS,tolN))
+        yHat = regTrees.createForeCast(myTree, reDraw.testDat, regTrees.modelTreeEval)
     else:
-        myTree=regTrees.createTree(reDraw.rawDat, ops=(tolS,tolN))
+        myTree = regTrees.createTree(reDraw.rawDat, ops=(tolS, tolN))
         yHat = regTrees.createForeCast(myTree, reDraw.testDat)
-    reDraw.a.scatter(reDraw.rawDat[:,0], reDraw.rawDat[:,1], s=5) #use scatter for data set
-    reDraw.a.plot(reDraw.testDat, yHat, linewidth=2.0) #use plot for yHat
+    """
+        numpy中matrix对象的方法：
+        getA() :返回自己，但是作为ndarray返回
+        getA1():返回一个扁平（一维）的数组（ndarray）
+    """
+    reDraw.a.scatter(reDraw.rawDat[:, 0].getA1(), reDraw.rawDat[:, 1].getA1(), s=5)  # use scatter for data set
+    reDraw.a.plot(mat(reDraw.testDat).transpose(), mat(yHat), linewidth=2.0)  # use plot for yHat
     reDraw.canvas.show()
-    
+
+
 def getInputs():
-    try: tolN = int(tolNentry.get())
-    except: 
+    try:
+        tolN = int(tolNentry.get())
+    except Exception as result1:
         tolN = 10 
-        print "enter Integer for tolN"
+        print("enter Integer for tolN")
+        print(result1)
         tolNentry.delete(0, END)
         tolNentry.insert(0,'10')
-    try: tolS = float(tolSentry.get())
-    except: 
+    try:
+        tolS = float(tolSentry.get())
+    except Exception as result:
         tolS = 1.0 
-        print "enter Float for tolS"
+        print("enter Float for tolS")
+        print(result)
         tolSentry.delete(0, END)
         tolSentry.insert(0,'1.0')
-    return tolN,tolS
+    return tolN, tolS
+
 
 def drawNewTree():
-    tolN,tolS = getInputs()#get values from Entry boxes
-    reDraw(tolS,tolN)
-    
-root=Tk()
+    tolN, tolS = getInputs()  # get values from Entry boxes
+    reDraw(tolS, tolN)
 
-reDraw.f = Figure(figsize=(5,4), dpi=100) #create canvas
+
+root = Tk()
+
+reDraw.f = Figure(figsize=(5,4), dpi=100)  # create canvas
 reDraw.canvas = FigureCanvasTkAgg(reDraw.f, master=root)
 reDraw.canvas.show()
 reDraw.canvas.get_tk_widget().grid(row=0, columnspan=3)
@@ -64,7 +75,7 @@ chkBtn = Checkbutton(root, text="Model Tree", variable = chkBtnVar)
 chkBtn.grid(row=3, column=0, columnspan=2)
 
 reDraw.rawDat = mat(regTrees.loadDataSet('sine.txt'))
-reDraw.testDat = arange(min(reDraw.rawDat[:,0]),max(reDraw.rawDat[:,0]),0.01)
+reDraw.testDat = arange(min(reDraw.rawDat[:, 0]), max(reDraw.rawDat[:, 0]), 0.01)
 reDraw(1.0, 10)
                
 root.mainloop()

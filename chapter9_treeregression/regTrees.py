@@ -12,7 +12,7 @@ def loadDataSet(filename):      # general function to parse tab -delimited float
     fr = open(filename)
     for line in fr.readlines():
         curLine = line.strip().split('\t')
-        fltLine = map(float,curLine)  # map all elements to float()
+        fltLine = list(map(float, curLine))  # map all elements to float()
         dataMat.append(fltLine)
     return dataMat
 
@@ -26,9 +26,19 @@ def binSplitDataSet(dataset, feature, value):
     :param value: 该特征的某个值
     :return:
     """
-    mat0 = dataset[nonzero(dataset[:, feature] > value)[0], :][0]
-    mat1 = dataset[nonzero(dataset[:, feature] <= value)[0], :][0]
-    return mat0, mat1
+    mat0 = []
+    mat1 = []
+
+    try:
+        # 判断是否是最大值，如果是，则返回空值
+        if value < max(dataset[:, feature]):
+            mat0 = dataset[nonzero(dataset[:, feature] > value)[0], :][0]
+        if value >= min(dataset[:, feature]):
+            mat1 = dataset[nonzero(dataset[:, feature] <= value)[0], :][0]
+    except Exception as result:
+        print(result)
+    finally:
+        return mat0, mat1
 
 
 def regLeaf(dataset):  # returns the value used for each leaf
@@ -47,8 +57,7 @@ def linearSolve(dataSet):   # helper function used in two places
     Y = dataSet[:, -1]  # and strip out Y
     xTx = X.T*X
     if linalg.det(xTx) == 0.0:
-        raise NameError('This matrix is singular, cannot do inverse,\n\
-        try increasing the second value of ops')
+        raise NameError('This matrix is singular, cannot do inverse,try increasing the second value of ops')
     ws = xTx.I * (X.T * Y)
     return ws, X, Y
 
@@ -64,7 +73,7 @@ def modelErr(dataSet):
     return sum(power(Y - yHat, 2))
 
 
-def chooseBestSplit(dataSet, leafType=regLeaf, errType=regErr, ops=(1,4)):
+def chooseBestSplit(dataSet, leafType=regLeaf, errType=regErr, ops=(1, 4)):
     tolS = ops[0]; tolN = ops[1]
     # if all the target variables are the same value: quit and return value
     if builtins.len(set(dataSet[:, -1].T.tolist()[0])) == 1:  # exit cond 1
@@ -76,7 +85,7 @@ def chooseBestSplit(dataSet, leafType=regLeaf, errType=regErr, ops=(1,4)):
     bestIndex = 0
     bestValue = 0
     for featIndex in range(n-1):
-        for splitVal in set(dataSet[:, featIndex]):
+        for splitVal in set(dataSet[:, featIndex].T.A.tolist()[0]):
             mat0, mat1 = binSplitDataSet(dataSet, featIndex, splitVal)
             if (shape(mat0)[0] < tolN) or (shape(mat1)[0] < tolN):
                 continue

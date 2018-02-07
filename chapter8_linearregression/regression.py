@@ -11,6 +11,7 @@ import builtins
 
 
 def loadDataSet(filename):      # general function to parse tab -delimited floats
+    # 获取特征的数量
     features = builtins.len(open(filename).readline().split('\t')) - 1  # get number of fields
     data_matrix = []
     label_matrix = []
@@ -67,7 +68,7 @@ def lwlr(test_point, x_arr, y_arr, k=1.0):
     for j in range(m):                      # next 2 lines create weights matrix
         diffMat = test_point - x_matrix[j, :]     #
         # 权重大小以指数级衰减，输入参数k控制衰减的速度
-        weights[j, j] = exp(diffMat * diffMat.T / (-2.0 * k ** 2))
+        weights[j, j] = exp(diffMat * diffMat.T / (-2.0 * k ** 2))  # 高斯核对应的权重
     xTx = x_matrix.T * (weights * x_matrix)
     if linalg.det(xTx) == 0.0:
         print("This matrix is singular, cannot do inverse")

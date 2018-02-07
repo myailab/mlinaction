@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 from numpy import *
 
 if __name__ == '__main__':
-    # method = "stand_regression"
+    method = "stand_regression"
     # method = "lwlr"
     # method = "predict_age_of_abalone"
     # method = "ridge_regression"
-    method = "stagewise"
+    # method = "stagewise"
 
     # data_matrix, class_labels = ada.load_simple_data()
 
@@ -31,6 +31,10 @@ if __name__ == '__main__':
         # exit()
         y_matrix = mat(y_arr)
         y_hat = x_matrix * ws
+        # 计算相关系数
+        corrcoef_val = corrcoef(y_hat.T, y_matrix)
+        print("相关系数为：")
+        print(corrcoef_val)
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.scatter(x_matrix[:, 1].flatten().A[0], y_matrix.T[:, 0].flatten().A[0])
@@ -39,6 +43,7 @@ if __name__ == '__main__':
         y_hat = x_copy * ws
         ax.plot(x_copy[:, 1], y_hat)
         plt.show()
+
     elif method == "lwlr":
         print("执行局部加权线性回归：")
         x_arr, y_arr = reg.loadDataSet('ex0.txt')
