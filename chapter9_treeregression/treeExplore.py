@@ -1,7 +1,7 @@
 from numpy import *
 
 from tkinter import *
-import regTrees
+from . import regTrees
 import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -29,7 +29,7 @@ def reDraw(tolS, tolN):
     reDraw.canvas.show()
 
 
-def getInputs():
+def get_inputs():
     try:
         tolN = int(tolNentry.get())
     except Exception as result1:
@@ -50,7 +50,7 @@ def getInputs():
 
 
 def drawNewTree():
-    tolN, tolS = getInputs()  # get values from Entry boxes
+    tolN, tolS = get_inputs()  # get values from Entry boxes
     reDraw(tolS, tolN)
 
 
